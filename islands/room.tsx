@@ -3,14 +3,16 @@ import { useEffect } from 'preact/hooks'
 
 export function RoomCmp() {
   const id = crypto.getRandomValues(new Uint32Array(1))[0]
+
   const document = useSignal('# Markdown document')
 
   useEffect(() => {
     const evtSource = new EventSource('/api/listen-room')
 
     evtSource.onmessage = e => {
-      console.log('EventSource message USE EFFECT', e)
-      const data = JSON.parse(e.data)
+      const parseData = JSON.parse(e.data)
+      const { document: upDoc } = parseData.data
+      document.value = upDoc
     }
 
     console.log('evtSource', evtSource)
@@ -31,15 +33,33 @@ export function RoomCmp() {
 
   // Actions
 
-  const updateDocument = () => {
-    console.log('updateDocument')
+  const updateDocument = async () => {
+    const response = await fetch('/api/update-doc', {
+      method: 'POST',
+      body: JSON.stringify({ id, document: document.value }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+
+    console.log('🚀 ~ file: room.tsx:43 ~ updateDocument ~ ID:', response)
+
+    const tmpDoc = document.value
+    document.value = tmpDoc
   }
 
   return (
     <div class={classes.container}>
       <h1>Document {id}</h1>
 
-      <textarea class={classes.editorArea}>{document}</textarea>
+      <textarea
+        onInput={e => {
+          const target = e.target as HTMLTextAreaElement
+          document.value = target.value
+        }}
+        class={classes.editorArea}>
+        {document}
+      </textarea>
 
       <button class={classes.btns.update} onClick={updateDocument}>
         Update Document
