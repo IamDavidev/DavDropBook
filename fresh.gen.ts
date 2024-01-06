@@ -8,6 +8,7 @@ import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_listen_room from "./routes/api/listen-room.ts";
 import * as $api_update_doc from "./routes/api/update-doc.ts";
 import * as $editor_index from "./routes/editor/index.tsx";
+import * as $editor_room_roomId_ from "./routes/editor/room/[roomId].tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $Counter from "./islands/Counter.tsx";
@@ -22,6 +23,7 @@ const manifest = {
     "./routes/api/listen-room.ts": $api_listen_room,
     "./routes/api/update-doc.ts": $api_update_doc,
     "./routes/editor/index.tsx": $editor_index,
+    "./routes/editor/room/[roomId].tsx": $editor_room_roomId_,
     "./routes/greet/[name].tsx": $greet_name_,
     "./routes/index.tsx": $index,
   },
