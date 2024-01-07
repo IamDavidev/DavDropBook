@@ -1,6 +1,5 @@
 import type { PageProps } from '$fresh/server.ts'
 import { RoomCmp } from '../../islands/room.tsx'
-
 export default function EditorPage(props: PageProps) {
   return (
     <div class={'bg-slate-900 w-full min-h-screen h-full grid'}>
