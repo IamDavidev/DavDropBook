@@ -3,12 +3,14 @@ import { HTTP_METHODS, ROUTES } from '../constants/routes.const.ts'
 
 export function NewRoom() {
   const genNewRoom = async () => {
-    await fetch(ROUTES.API.DOCUMENT.NEW_ROOM, {
+    const res = await fetch(ROUTES.API.DOCUMENT.NEW_ROOM, {
       method: HTTP_METHODS.GET,
       headers: {
         'Content-Type': 'application/json',
       },
     })
+
+    console.log('🚀 ~ file: NewRoom.componen.tsx:12 ~ genNewRoom ~ res:', res)
     console.log('New Room')
   }
 
