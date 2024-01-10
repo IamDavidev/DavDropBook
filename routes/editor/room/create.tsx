@@ -7,7 +7,6 @@ export const handler: Handlers = {
   GET() {
     const id = crypto.randomUUID()
     const location = ROUTES.APP.DOCUMENT.ROOM(id)
-    console.log('🚀 ~ file: create.tsx:9 ~ GET ~ path:', location)
     return new Response('', {
       status: HTTP_STATUS.TEMPORARY_REDIRECT,
       headers: {
