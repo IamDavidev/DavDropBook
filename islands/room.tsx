@@ -15,8 +15,6 @@ export function RoomCmp() {
       document.value = upDoc
     }
 
-    console.log('evtSource', evtSource)
-
     return () => evtSource.close()
   })
 
@@ -41,8 +39,6 @@ export function RoomCmp() {
         'Content-Type': 'application/json',
       },
     })
-
-    console.log('🚀 ~ file: room.tsx:43 ~ updateDocument ~ ID:', response)
 
     const tmpDoc = document.value
     document.value = tmpDoc
