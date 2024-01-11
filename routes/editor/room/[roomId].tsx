@@ -1,6 +1,9 @@
 import { PageProps } from '$fresh/server.ts'
-import { JSX } from 'preact/jsx-runtime'
+import { useSignal } from '@preact/signals'
+import type { JSX } from 'preact/jsx-runtime'
+
 import { PageLayout } from '../../../components/layouts/page-layout.tsx'
+import { EditorMD } from '../../../islands/editor-md.tsx'
 
 export default function RoomLive(props: PageProps): JSX.Element {
   const { roomId } = props.params
@@ -16,20 +19,13 @@ export default function RoomLive(props: PageProps): JSX.Element {
     },
   }
 
+  const document = useSignal('# Markdown document')
+
   return (
     <PageLayout>
       <div class={classes.container}>
         <h1>Room {roomId}</h1>
-        <div class={classes.panel.container}>
-          <div class={classes.panel.editor}>
-            <div class={classes.panel.title}>Editor</div>
-            <textarea label={'editor'} class={classes.panel.area}></textarea>
-          </div>
-          <div class={classes.panel.editor}>
-            <div class={classes.panel.title}>Preview</div>
-            <textarea label={'preview'} class={classes.panel.area}></textarea>
-          </div>
-        </div>
+        <EditorMD roomId={roomId} document='# Document ' />
       </div>
     </PageLayout>
   )
