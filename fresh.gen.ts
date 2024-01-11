@@ -12,6 +12,7 @@ import * as $editor_room_roomId_ from "./routes/editor/room/[roomId].tsx";
 import * as $editor_room_create from "./routes/editor/room/create.tsx";
 import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
+import * as $editor_md from "./islands/editor-md.tsx";
 import * as $room from "./islands/room.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
@@ -29,6 +30,7 @@ const manifest = {
     "./routes/index.tsx": $index,
   },
   islands: {
+    "./islands/editor-md.tsx": $editor_md,
     "./islands/room.tsx": $room,
   },
   baseUrl: import.meta.url,
