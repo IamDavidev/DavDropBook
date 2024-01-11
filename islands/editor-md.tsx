@@ -44,9 +44,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
         'Content-Type': 'application/json',
       },
     })
-
-    const tmpDoc = document.value
-    document.value = tmpDoc
+    swapDocument()
   }
 
   useEffect(() => {
@@ -55,6 +53,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     evtSource.onmessage = e => {
       const parseData = JSON.parse(e.data)
       const { document: upDoc } = parseData.data
+      console.log('upDoc', upDoc)
       document.value = upDoc
     }
 
