@@ -17,7 +17,7 @@ interface EditorMDProps {
 }
 
 export function EditorMD(props: EditorMDProps): JSX.Element {
-  const { roomId, document: documentProp } = props
+  const { roomId } = props
 
   const classes = {
     panel: {
@@ -29,7 +29,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     },
   }
 
-  const document = useSignal(documentProp)
+  const document = useSignal('# Markdown document')
 
   const swapDocument = () => {
     const tmpDoc = document.value
@@ -37,6 +37,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
   }
 
   const updateDocument = async () => {
+    console.log('🚀 ~ updateDocument ~ document:', document.value)
     await fetch('/api/update-doc', {
       method: 'POST',
       body: JSON.stringify({ id: roomId, document: document.value }),
@@ -53,7 +54,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     evtSource.onmessage = e => {
       const parseData = JSON.parse(e.data)
       const { document: upDoc } = parseData.data
-      console.log('upDoc', upDoc)
+      console.log('🚀 ~ useEffect ~ upDoc:', upDoc)
       document.value = upDoc
     }
 
@@ -66,8 +67,11 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
         <div class={classes.panel.title}>Editor</div>
         <textarea
           label={'editor'}
-          defaultValue={document.value}
-          onInput={() => {
+          value={document.value ?? ''}
+          onInput={e => {
+            const target = e.target as HTMLTextAreaElement
+            console.log('🚀 ~ EditorMD ~ target:', target)
+            document.value = target.value
             updateDocument()
           }}
           class={classes.panel.area}></textarea>
