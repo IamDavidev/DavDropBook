@@ -14,6 +14,7 @@ import * as $greet_name_ from "./routes/greet/[name].tsx";
 import * as $index from "./routes/index.tsx";
 import * as $editor_md from "./islands/editor-md.tsx";
 import * as $room from "./islands/room.tsx";
+import * as $user_position from "./islands/user-position.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -32,6 +33,7 @@ const manifest = {
   islands: {
     "./islands/editor-md.tsx": $editor_md,
     "./islands/room.tsx": $room,
+    "./islands/user-position.tsx": $user_position,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

@@ -1,25 +1,35 @@
-import { useSignal } from '@preact/signals'
+import { Signal, useSignal } from '@preact/signals'
 import { useEffect } from 'preact/hooks'
 import type { JSX } from 'preact/jsx-runtime'
 
 import { render } from 'https://deno.land/x/gfm@0.4.0/mod.ts'
+import { UserPosition } from './user-position.tsx'
 
 interface EditorMDProps {
   /**
    * The room id
-   * @type {string}
+   * @type {string} not null
    */
   roomId: string
   /**
    * The document value in markdown
    * TODO: [Change for Object with more properties]
-   * @type {string}
+   * @type {string} not null
    */
   document: string
+  /**
+   * The user id
+   * To identify the user
+   * @type {string} not null
+   */
+  userId: string
 }
 
 export function EditorMD(props: EditorMDProps): JSX.Element {
-  const { roomId } = props
+  const { roomId, userId } = props
+
+  console.log('Editor MD', roomId, userId)
+
   const classes = {
     panel: {
       container: 'flex flex-row gap-4 items',
@@ -30,17 +40,17 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     },
   }
 
-  const document = useSignal('# Markdown document')
+  const rawMDDocument = useSignal('# Markdown document')
 
   const swapDocument = () => {
-    const tmpDoc = document.value
-    document.value = tmpDoc
+    const tmpDoc = rawMDDocument.value
+    rawMDDocument.value = tmpDoc
   }
 
   const updateDocument = async () => {
     await fetch('/api/update-doc', {
       method: 'POST',
-      body: JSON.stringify({ id: roomId, document: document.value }),
+      body: JSON.stringify({ id: roomId, document: rawMDDocument.value }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -48,7 +58,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     swapDocument()
   }
 
-  const bodyMD = render(document.value ?? '')
+  const bodyMD = render(rawMDDocument.value ?? '')
 
   useEffect(() => {
     const evtSource = new EventSource('/api/listen-room')
@@ -56,11 +66,9 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     evtSource.onmessage = e => {
       const parseData = JSON.parse(e.data)
       const { document: upDoc } = parseData.data
-      document.value = upDoc
+      rawMDDocument.value = upDoc
     }
-
-    return () => evtSource.close()
-  })
+  }, [])
 
   return (
     <div class={classes.panel.container}>
@@ -68,17 +76,20 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
         <div class={classes.panel.title}>Editor</div>
         <textarea
           label={'editor'}
-          value={document.value ?? ''}
+          value={rawMDDocument.value ?? ''}
           onInput={e => {
             const target = e.target as HTMLTextAreaElement
-            document.value = target.value
+            rawMDDocument.value = target.value
             updateDocument()
           }}
           class={classes.panel.area}></textarea>
       </div>
       <div class={classes.panel.editor}>
         <div class={classes.panel.title}>Preview</div>
-        <iframe srcDoc={bodyMD} class='w-full h-full'></iframe>
+        <div
+          class='markdown-body'
+          dangerouslySetInnerHTML={{ __html: render(bodyMD) }}
+        />
       </div>
     </div>
   )
