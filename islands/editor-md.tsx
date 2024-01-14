@@ -2,7 +2,7 @@ import { Signal, useSignal } from '@preact/signals'
 import { useEffect } from 'preact/hooks'
 import type { JSX } from 'preact/jsx-runtime'
 
-import { render } from 'https://deno.land/x/gfm@0.4.0/mod.ts'
+import { render, CSS } from 'https://deno.land/x/gfm@0.4.0/mod.ts'
 import { UserPosition } from './user-position.tsx'
 
 interface EditorMDProps {
@@ -86,6 +86,10 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
       </div>
       <div class={classes.panel.editor}>
         <div class={classes.panel.title}>Preview</div>
+        <style
+          dangerouslySetInnerHTML={{
+            __html: CSS,
+          }}></style>
         <div
           class='markdown-body'
           dangerouslySetInnerHTML={{ __html: render(bodyMD) }}
