@@ -6,8 +6,6 @@ export const handler: Handlers = {
     const body = await req.json()
     const document = body.document
 
-    // console.log('🚀 ~ POST ~ document:', document)
-
     const bc = new BroadcastChannel('editor-room')
     bc.postMessage({
       document,
