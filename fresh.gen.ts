@@ -6,6 +6,7 @@ import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
 import * as $api_joke from "./routes/api/joke.ts";
 import * as $api_listen_room from "./routes/api/listen-room.ts";
+import * as $api_listen_user_positions from "./routes/api/listen-user-positions.ts";
 import * as $api_update_doc from "./routes/api/update-doc.ts";
 import * as $editor_index from "./routes/editor/index.tsx";
 import * as $editor_room_roomId_ from "./routes/editor/room/[roomId].tsx";
@@ -15,6 +16,7 @@ import * as $index from "./routes/index.tsx";
 import * as $editor_md from "./islands/editor-md.tsx";
 import * as $room from "./islands/room.tsx";
 import * as $user_position from "./islands/user-position.tsx";
+import * as $user_user_bar from "./islands/user/user-bar.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -23,6 +25,7 @@ const manifest = {
     "./routes/_app.tsx": $_app,
     "./routes/api/joke.ts": $api_joke,
     "./routes/api/listen-room.ts": $api_listen_room,
+    "./routes/api/listen-user-positions.ts": $api_listen_user_positions,
     "./routes/api/update-doc.ts": $api_update_doc,
     "./routes/editor/index.tsx": $editor_index,
     "./routes/editor/room/[roomId].tsx": $editor_room_roomId_,
@@ -34,6 +37,7 @@ const manifest = {
     "./islands/editor-md.tsx": $editor_md,
     "./islands/room.tsx": $room,
     "./islands/user-position.tsx": $user_position,
+    "./islands/user/user-bar.tsx": $user_user_bar,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
