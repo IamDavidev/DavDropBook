@@ -1,6 +1,8 @@
-import { Signal, useSignal } from '@preact/signals'
+import { useSignal } from '@preact/signals'
 import { useEffect } from 'preact/hooks'
 import type { JSX } from 'preact/jsx-runtime'
+
+import { render } from 'https://deno.land/x/gfm@0.4.0/mod.ts'
 
 interface EditorMDProps {
   /**
@@ -18,12 +20,11 @@ interface EditorMDProps {
 
 export function EditorMD(props: EditorMDProps): JSX.Element {
   const { roomId } = props
-
   const classes = {
     panel: {
       container: 'flex flex-row gap-4 items',
       editor:
-        'w-1/2 lg:min-w-[400px] h-auto min-h-full bg-[#1a202c] rounded-lg resize-none text-white p-2',
+        'w-1/2 min-w-[240px] lg:min-w-[400px] h-auto min-h-full bg-[#1a202c] rounded-lg resize-none text-white p-2',
       area: 'w-full min-h-[750px] h-full bg-transparent text-white resize-none border-none focus:outline-none',
       title: 'bg-slate-900 rounded-lg text-white px-2 py-1 w-fit',
     },
@@ -37,7 +38,6 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
   }
 
   const updateDocument = async () => {
-    console.log('🚀 ~ updateDocument ~ document:', document.value)
     await fetch('/api/update-doc', {
       method: 'POST',
       body: JSON.stringify({ id: roomId, document: document.value }),
@@ -48,13 +48,14 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
     swapDocument()
   }
 
+  const bodyMD = render(document.value ?? '')
+
   useEffect(() => {
     const evtSource = new EventSource('/api/listen-room')
 
     evtSource.onmessage = e => {
       const parseData = JSON.parse(e.data)
       const { document: upDoc } = parseData.data
-      console.log('🚀 ~ useEffect ~ upDoc:', upDoc)
       document.value = upDoc
     }
 
@@ -70,7 +71,6 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
           value={document.value ?? ''}
           onInput={e => {
             const target = e.target as HTMLTextAreaElement
-            console.log('🚀 ~ EditorMD ~ target:', target)
             document.value = target.value
             updateDocument()
           }}
@@ -78,7 +78,7 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
       </div>
       <div class={classes.panel.editor}>
         <div class={classes.panel.title}>Preview</div>
-        <textarea label={'preview'} class={classes.panel.area}></textarea>
+        <iframe srcDoc={bodyMD} class='w-full h-full'></iframe>
       </div>
     </div>
   )
