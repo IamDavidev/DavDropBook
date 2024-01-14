@@ -1,4 +1,5 @@
 import { Handlers } from '$fresh/server.ts'
+import { EVENT_STREAM_OPTIONS } from '../../constants/event-stream-options.ts'
 
 const WAIT_CHUNK = `retry: 1000\n\n`
 
@@ -21,11 +22,6 @@ export const handler: Handlers = {
 
     const response = body.pipeThrough(new TextEncoderStream())
 
-    return new Response(response, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-      },
-    })
+    return new Response(response, EVENT_STREAM_OPTIONS)
   },
 }
