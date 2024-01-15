@@ -1,9 +1,10 @@
-import { Signal, useSignal } from '@preact/signals'
+import { useSignal } from '@preact/signals'
 import { useEffect } from 'preact/hooks'
 import type { JSX } from 'preact/jsx-runtime'
 
 import { render, CSS } from 'https://deno.land/x/gfm@0.4.0/mod.ts'
-import { UserPosition } from './user-position.tsx'
+import { HTTP_METHODS } from '../constants/http.const.ts'
+import { ROUTES } from '../constants/routes.const.ts'
 
 interface EditorMDProps {
   /**
@@ -28,8 +29,6 @@ interface EditorMDProps {
 export function EditorMD(props: EditorMDProps): JSX.Element {
   const { roomId, userId } = props
 
-  console.log('Editor MD', roomId, userId)
-
   const classes = {
     panel: {
       container: 'flex flex-row gap-4 items',
@@ -48,9 +47,9 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
   }
 
   const updateDocument = async () => {
-    await fetch('/api/update-doc', {
-      method: 'POST',
-      body: JSON.stringify({ id: roomId, document: rawMDDocument.value }),
+    await fetch(ROUTES.API.DOCUMENT.UPDATE(), {
+      method: HTTP_METHODS.POST,
+      body: JSON.stringify({ roomId, document: rawMDDocument.value }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -61,7 +60,12 @@ export function EditorMD(props: EditorMDProps): JSX.Element {
   const bodyMD = render(rawMDDocument.value ?? '')
 
   useEffect(() => {
-    const evtSource = new EventSource('/api/listen-room')
+    const evtSource = new EventSource(
+      ROUTES.API.DOCUMENT.LISTEN_ROOM({
+        roomId,
+        userId,
+      })
+    )
 
     evtSource.onmessage = e => {
       const parseData = JSON.parse(e.data)
