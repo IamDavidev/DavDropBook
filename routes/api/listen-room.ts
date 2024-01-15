@@ -5,27 +5,18 @@ import { CHANNELS } from '../../constants/channel.const.ts'
 import { EVENT_STREAM_OPTIONS } from '../../constants/event-stream-options.ts'
 
 export const handler: Handlers = {
-  GET(_req, _ctx) {
-    // const channel = new BroadcastChannel('editor-room')
+  GET(req, _ctx) {
+    const url = new URL(req.url)
+    const roomId = url.searchParams.get('roomId')
 
-    // const body = new ReadableStream({
-    //   start(controller) {
-    //     controller.enqueue(WAIT_CHUNK)
-    //     channel.onmessage = e => {
-    //       const data = e
-    //       controller.enqueue(`data: ${JSON.stringify(data)}\n\n`)
-    //     }
-    //   },
-    //   cancel() {
-    //     channel.close()
-    //   },
-    // })
+    if (!roomId) {
+      return new Response('roomId is required', { status: 400 })
+    }
 
-    // const response = body.pipeThrough(new TextEncoderStream())
-
-    const connection = CHANNELS.NEW_PUBLIC_ROOM_CONNECTION('editor-room')
+    const connection = CHANNELS.NEW_PUBLIC_ROOM_CONNECTION(roomId)
     const channel = connection.getChannelName as string
 
+    console.log(`New connection to ${channel}`)
     const response = getNewLiveConnection({
       nameChannel: channel,
     })
