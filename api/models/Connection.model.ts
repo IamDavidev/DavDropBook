@@ -13,22 +13,25 @@ export class Connection {
    */
   private options: null | object = null
 
-  private constructor(
-    private readonly roomId: string,
-    private readonly typeConnection: string,
-    private readonly optionsConnection: null | object
-  ) {
-    this.genNewChannelName(roomId)
-    this.type = typeConnection
-    this.options = optionsConnection
-  }
+  /**
+   * Room id to establish a connection
+   */
+  private roomId: string | undefined
 
-  private genNewChannelName(roomId: string): void {
-    this.channelName = `[room,${roomId}]`
+  private constructor(
+    private readonly room_Id: string,
+    private readonly type_connection: string,
+    private readonly options_connection: null | object,
+    private readonly channel_name: string | undefined
+  ) {
+    this.roomId = room_Id
+    this.type = type_connection
+    this.options = options_connection
+    this.channelName = channel_name
   }
 
   public static createNewConnectionPublic(roomId: string): Connection {
-    return new Connection(roomId, 'public', null)
+    return new Connection(roomId, 'public', null, `[room,${roomId}]`)
   }
 
   get getChannelName(): string | undefined {
