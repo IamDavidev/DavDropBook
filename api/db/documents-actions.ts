@@ -1,18 +1,40 @@
+import { INITIAL_DOCUMENT } from '../../constants/document.const.ts'
 import { Either } from '../utils/either.ts'
 import { prefixDB, type DBKV } from './connection.ts'
 
+/**
+ * UpdateDocumentParams
+ * Interface to receive the parameters of the updateDocument function
+ */
 interface UpdateDocumentParams {
   db: DBKV
   documentId: string
   document: string
 }
 
+/**
+ * CreateDocumentParams
+ * Interface to receive the parameters of the createDocument function
+ */
+interface CreateDocumentParams {
+  db: DBKV
+  documentId: string
+}
+
+/**
+ * ResponseUpdateDocument
+ * Interface to return the response of the updateDocument function
+ */
 interface ResponseUpdateDocument {
   versionstamp: string
   documentId: string
   document: string
 }
 
+/**
+ * updateDocument
+ * Function to update a document in the database
+ */
 export async function updateDocument(
   params: UpdateDocumentParams
 ): Promise<Either> {
@@ -26,9 +48,23 @@ export async function updateDocument(
     return Either.left('Unable to update document')
   }
 
-  return Either.right({
+  return Either.right<ResponseUpdateDocument>({
     versionstamp,
     documentId,
     document,
   })
+}
+
+export async function createDocument(
+  params: CreateDocumentParams
+): Promise<Either> {
+  const { db, documentId } = params
+
+  const { ok } = await db.set(prefixDB.document(documentId), INITIAL_DOCUMENT)
+
+  if (!ok) {
+    return Either.left('Unable to create document')
+  }
+
+  return Either.right('Not implemented yet')
 }
