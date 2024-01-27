@@ -1,3 +1,4 @@
+import { Either } from '../utils/either.ts'
 import { prefixDB, type DBKV } from './connection.ts'
 
 interface UpdateDocumentParams {
@@ -12,7 +13,9 @@ interface ResponseUpdateDocument {
   document: string
 }
 
-export async function updateDocument(params: UpdateDocumentParams) {
+export async function updateDocument(
+  params: UpdateDocumentParams
+): Promise<Either> {
   const { db, document, documentId } = params
   const { versionstamp, ok } = await db.set(
     prefixDB.document(documentId),
@@ -20,13 +23,12 @@ export async function updateDocument(params: UpdateDocumentParams) {
   )
 
   if (!ok) {
-    // TODO: Create a custom error type
-    throw new Error('Unable to update document')
+    return Either.left('Unable to update document')
   }
 
-  return {
+  return Either.right({
     versionstamp,
     documentId,
     document,
-  }
+  })
 }
