@@ -21,15 +21,23 @@ interface CreateDocumentParams {
   documentId: string
 }
 
+interface BaseResponse {
+  ok: boolean
+  status: number
+  message: string
+  versionstamp: string
+  documentId: string
+}
+
 /**
  * ResponseUpdateDocument
  * Interface to return the response of the updateDocument function
  */
-interface ResponseUpdateDocument {
-  versionstamp: string
-  documentId: string
+interface ResponseUpdateDocument extends BaseResponse {
   document: string
 }
+
+interface ResponseCreateDocument extends BaseResponse {}
 
 /**
  * updateDocument
@@ -52,6 +60,9 @@ export async function updateDocument(
     versionstamp,
     documentId,
     document,
+    ok,
+    status: 200,
+    message: 'Document updated successfully',
   })
 }
 
@@ -59,12 +70,18 @@ export async function createDocument(
   params: CreateDocumentParams
 ): Promise<Either> {
   const { db, documentId } = params
+  const { ok, versionstamp } = await db.set(
+    prefixDB.document(documentId),
+    INITIAL_DOCUMENT
+  )
 
-  const { ok } = await db.set(prefixDB.document(documentId), INITIAL_DOCUMENT)
+  if (!ok) return Either.left('Unable to create document')
 
-  if (!ok) {
-    return Either.left('Unable to create document')
-  }
-
-  return Either.right('Not implemented yet')
+  return Either.right<ResponseCreateDocument>({
+    versionstamp,
+    documentId,
+    ok,
+    status: 200,
+    message: 'Document created successfully',
+  })
 }
