@@ -1,3 +1,4 @@
+import { version } from 'https://esm.sh/v135/he@1.2.0/denonext/he.mjs'
 import { INITIAL_DOCUMENT } from '../../constants/document.const.ts'
 import { Either } from '../utils/either.ts'
 import { prefixDB, type DBKV } from './connection.ts'
@@ -83,5 +84,29 @@ export async function createDocument(
     ok,
     status: 200,
     message: 'Document created successfully',
+  })
+}
+
+interface ResponseGetDocument extends BaseResponse {
+  document: string
+}
+
+export async function getDocument(
+  db: DBKV,
+  documentId: string
+): Promise<Either> {
+  const { key, value, versionstamp } = await db.get<string>(
+    prefixDB.document(documentId)
+  )
+
+  if (key === null) return Either.left('Unable to get document')
+
+  return Either.right<ResponseGetDocument>({
+    documentId,
+    document: value as string,
+    versionstamp: versionstamp as string,
+    ok: true,
+    status: 200,
+    message: 'Document retrieved successfully',
   })
 }
