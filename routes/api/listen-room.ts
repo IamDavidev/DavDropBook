@@ -9,9 +9,7 @@ export const handler: Handlers = {
     const url = new URL(req.url)
     const roomId = url.searchParams.get('roomId')
 
-    if (!roomId) {
-      return new Response('roomId is required', { status: 400 })
-    }
+    if (!roomId) return new Response('roomId is required', { status: 400 })
 
     const connection = CONNECTION.NEW_PUBLIC_ROOM_CONNECTION(roomId)
     const channel = connection.getChannelName as string
