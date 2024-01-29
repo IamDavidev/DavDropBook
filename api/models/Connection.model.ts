@@ -1,48 +1,42 @@
 export class Connection {
-  /**
-   * Channel name to subscribe and establish a connection
-   */
-  private channelName: string | undefined
-  /**
-   * Type of connection to verify if is public or private
-   */
-  private type: string | undefined
-  /**
-   * Options to establish a connection
-   * @Actions: define the type of options
-   */
-  private options: null | object = null
-
-  /**
-   * Room id to establish a connection
-   */
-  private roomId: string | undefined
-
   private constructor(
+    /**
+     * @param room_Id
+     * Room id is a unique id for each room in the database
+     */
     private readonly room_Id: string,
+    /**
+     * @param type_connection
+     * Type connection is the type of connection that the user will use
+     * PUBLIC - PRIVATE
+     */
     private readonly type_connection: string,
+    /**
+     * @param options_connection
+     * TODO: Create a class for this
+     */
     private readonly options_connection: null | object,
+    /**
+     * @param channel_name
+     * Channel name is the name of the channel that the user will use
+     * @default [room,${roomId}]
+     */
     private readonly channel_name: string | undefined
-  ) {
-    this.roomId = room_Id
-    this.type = type_connection
-    this.options = options_connection
-    this.channelName = channel_name
-  }
+  ) {}
 
   public static createNewConnectionPublic(roomId: string): Connection {
     return new Connection(roomId, 'public', null, `[room,${roomId}]`)
   }
 
   get getChannelName(): string | undefined {
-    return this.channelName
+    return this.channel_name
   }
 
   get getType(): string | undefined {
-    return this.type
+    return this.type_connection
   }
 
   get getOptions(): null | object {
-    return this.options
+    return this.options_connection
   }
 }
